@@ -836,9 +836,10 @@ start_installation ()
 	introduction
 	MYSQL_ROOT_PASSWORD=`echo "$(genpasswd 20)" | sed s/./*/5`
         ASTPPUSER_MYSQL_PASSWORD=`echo "$(genpasswd 20)" | sed s/./*/5`
-        echo $MYSQL_ROOT_PASSWORD
-        echo $MYSQL_ROOT_PASSWORD
 
+        ## Just making sure password is generated
+        echo $MYSQL_ROOT_PASSWORD
+        echo $ASTPPUSER_MYSQL_PASSWORD
 
         pre_install
         install_prerequisties
