@@ -1,6 +1,6 @@
 #!/bin/bash
 #############################################################################################
-# ASTP v0.1.0 beta  installer for ASTPP version 5
+# ASTP v1.0.0-beta1  installer for ASTPP version 5
 #
 #
 # This installation script is partly based on the iNetrix Technologies Pvt. Ltd.
