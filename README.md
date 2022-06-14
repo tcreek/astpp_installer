@@ -23,3 +23,8 @@ The purpose of this script is for multiple reasons compared to the one providedb
  6) No telemetry sent
 
 
+
+To excute installer: bash astpp_v5_install.sh
+
+
+
