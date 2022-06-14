@@ -1,6 +1,6 @@
 #!/bin/bash
 #############################################################################################
-# ASTP v1.0.0-beta1  installer for ASTPP version 5
+#  v1.0.0-beta1  installer for ASTPP version 5
 #
 #
 # This installation script is partly based on the iNetrix Technologies Pvt. Ltd.
@@ -833,31 +833,116 @@ clean_server ()
 start_installation ()
 {
 
-	introduction
+introduction
 	MYSQL_ROOT_PASSWORD=`echo "$(genpasswd 20)" | sed s/./*/5`
         ASTPPUSER_MYSQL_PASSWORD=`echo "$(genpasswd 20)" | sed s/./*/5`
+
         echo $MYSQL_ROOT_PASSWORD
         echo $MYSQL_ROOT_PASSWORD
 
+	read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
 
         pre_install
-        install_prerequisties
-        get_user_response
-	os_dependencies
-        freeswitch_source_dependencies
-	install_freeswitch
-        get_astpp_source
-        normalize_mariadb
-        install_database
-        normalize_freeswitch
-        install_astpp
-        normalize_astpp
-        configure_firewall
-        install_fail2ban
-        install_monit
-        logrotate_install
-        clean_server
+                read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
 
+        install_prerequisties
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        get_user_response
+        echo "End of Get user reponse"
+	read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+
+	os_dependencies
+	read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        freeswitch_source_dependencies
+	read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+	install_freeswitch
+	echo "install_freeswitch"
+	read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+
+        get_astpp_source
+        echo "get_astpp_source"
+        read -n 1 -p "Continue (y/n) "
+
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+
+        normalize_mariadb
+        echo "get_astpp_source"
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        install_database
+        echo "install_database"
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        normalize_freeswitch
+        echo "normalize_freeswitch"
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        install_astpp
+        echo "install_astpp"
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        normalize_astpp
+        echo "normalize_astpp"
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        configure_firewall
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        install_fail2ban
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        install_monit
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        logrotate_install
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
+        clean_server
+        read -n 1 -p "Continue (y/n) "
+                if [ "$REPLY"   = "n" ]; then
+                exit 1;
+                fi
         clear
         echo "******************************************************************************************"
         echo "******************************************************************************************"
