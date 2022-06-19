@@ -237,6 +237,7 @@ install_prerequisties()
 
 # install dependencies
 
+
 apt update && apt upgrade
 apt install -y wget lsb-release systemd systemd-sysv ca-certificates dialog nano net-tools
 apt install -y autoconf automake devscripts g++ git-core libncurses5-dev libtool make libjpeg-dev
@@ -277,6 +278,12 @@ if [ ."$os_codename" = ."buster" ]; then
 	apt install -y php7.3-gd php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-imap
 fi
 if [ ."$os_codename" = ."bullseye" ]; then
+        
+        #Need to add backports for IP tables 1.8.3 and monit.
+	printf "%s\n" "deb http://ftp.de.debian.org/debian buster-backports main" | \
+	tee /etc/apt/sources.list.d/buster-backports.list
+	
+	apt install -t buster-backports iptables -y 
 	apt install -y libvpx6 swig4.0 python3-distutils
 	apt install -y php7.4 php7.4-fpm php7.4-mysql php7.4-cli php7.4-json php7.4-readline php7.4-xml php7.4-curl
 	apt install -y php7.4-gd php7.4-json php7.4-mbstring php7.4-mysql php7.4-opcache php7.4-imap
@@ -660,12 +667,8 @@ install_monit ()
 
 
 #Monit is not is Buster Backports
-printf "%s\n" "deb http://ftp.de.debian.org/debian buster-backports main" | \
-tee /etc/apt/sources.list.d/buster-backports.list
 
-
-
-apt-get -y install monit
+apt install -t buster-backports monit -y 
 
 read -p "Enter a Notification email address for sytem monitor: ${EMAIL}"
 
