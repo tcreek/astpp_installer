@@ -277,6 +277,8 @@ if [ ."$os_codename" = ."buster" ]; then
         printf "%s\n" "deb http://ftp.de.debian.org/debian buster-backports main" | \
         tee /etc/apt/sources.list.d/buster-backports.list
 
+	apt update
+
 	apt install -t buster-backports iptables -y
 	apt install -y libvpx5 swig3.0 python3-distutils 
 	apt install -y php7.3 php7.3-fpm php7.3-mysql php7.3-cli php7.3-json php7.3-readline php7.3-xml php7.3-curl
