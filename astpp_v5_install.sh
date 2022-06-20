@@ -273,16 +273,24 @@ os_codename=$(lsb_release -cs)
 
 
 if [ ."$os_codename" = ."buster" ]; then
+
+#Need to add backports for IP tables 1.8.3 and monit.
+        printf "%s\n" "deb http://ftp.de.debian.org/debian buster-backports main" | \
+        tee /etc/apt/sources.list.d/buster-backports.list
+
+        apt install -t buster-backports iptables -y 
+
+
 	apt install -y libvpx5 swig3.0 python3-distutils 
 	apt install -y php7.3 php7.3-fpm php7.3-mysql php7.3-cli php7.3-json php7.3-readline php7.3-xml php7.3-curl
 	apt install -y php7.3-gd php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-imap
 fi
 if [ ."$os_codename" = ."bullseye" ]; then
-        
+
         #Need to add backports for IP tables 1.8.3 and monit.
 	printf "%s\n" "deb http://ftp.de.debian.org/debian buster-backports main" | \
 	tee /etc/apt/sources.list.d/buster-backports.list
-	
+
 	apt install -t buster-backports iptables -y 
 	apt install -y libvpx6 swig4.0 python3-distutils
 	apt install -y php7.4 php7.4-fpm php7.4-mysql php7.4-cli php7.4-json php7.4-readline php7.4-xml php7.4-curl
