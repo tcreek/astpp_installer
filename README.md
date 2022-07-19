@@ -24,8 +24,9 @@ The purpose of this script is for multiple reasons compared to the one providedb
 
 
 
-To excute installer: chmod +x astpp_v5_install.sh
-                   : ./astpp_v5_install.sh
+To excute installer: 
+chmod +x astpp_v5_install.sh
+./astpp_v5_install.sh
 
 
 
