@@ -2,9 +2,9 @@
 This installation script is partly based on the iNetrix Technologies Pvt. Ltd. installtion script for installing ASTPP.
 #
 This script will only install version 5 of ASTPP, and for using only  
-Debian 10 and 11.
+Debian 10 (Debian 11 not working now).
 
-The purpose of this script is for multiple reasons compared to the one providedby iNetrix:
+The purpose of this script is for multiple reasons compared to the one provided by iNetrix:
 
  1) Compiles FreeSwitch from source instead of using the SignalWire repo 
     which requires a SignalWire account with a token attached to that account
@@ -24,7 +24,11 @@ The purpose of this script is for multiple reasons compared to the one providedb
 
 
 
-To excute installer: bash astpp_v5_install.sh
+To excute installer: 
+chmod +x astpp_v5_install.sh
+
+
+./astpp_v5_install.sh
 
 
 
