@@ -247,7 +247,7 @@ apt install -y devscripts libspeexdsp-dev libspeex-dev libldns-dev libedit-dev l
 apt install -y libshout3-dev libmpg123-dev libmp3lame-dev yasm nasm libsndfile1-dev libuv1-dev libvpx-dev
 apt install -y libavformat-dev libswscale-dev libvlc-dev libavformat-dev libswscale-dev  libsndfile-dev 
 apt install -y wget curl git dnsutils ntpdate systemd net-tools whois sensible-mda mlocate vim imagemagick
-apt install -y php-pear php-imagick libreoffice ghostscript
+apt install -y php-pear php-imagick libreoffice ghostscript sngrep
 apt install -y software-properties-common lsb-release apt-transport-https ca-certificates unixodbc unixodbc-bin
 apt install -y cmake uuid-dev sqlite3 unzip mariadb-server
 apt install -y nginx ntpdate ntp lua5.1 bc libxml2-dev ed
