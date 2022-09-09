@@ -25,6 +25,9 @@ The purpose of this script is for multiple reasons compared to the one provided 
 
 
 To excute installer: 
+
+wget https://raw.githubusercontent.com/tcreek/astpp_installer/main/astpp_v5_install.sh
+
 chmod +x astpp_v5_install.sh
 
 
