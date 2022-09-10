@@ -238,7 +238,7 @@ install_prerequisties()
 # install dependencies
 
 
-apt update && apt upgrade
+apt update && apt -y upgrade
 apt install -y wget lsb-release systemd systemd-sysv ca-certificates dialog nano net-tools
 apt install -y autoconf automake devscripts g++ git-core libncurses5-dev libtool make libjpeg-dev
 apt install -y pkg-config flac  libgdbm-dev libdb-dev gettext sudo equivs mlocate git dpkg-dev libpq-dev
@@ -380,7 +380,7 @@ sed -i modules.conf -e s:'endpoints/mod_verto:#endpoints/mod_verto:'
 
 
 # prepare the build
-./configure --with-openssl
+./configure --prefix=/usr/local/freeswitch --with-openssl
 
 # compile and install
 make -j$(($(getconf _NPROCESSORS_ONLN)+1))
