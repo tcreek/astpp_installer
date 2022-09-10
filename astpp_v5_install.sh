@@ -389,8 +389,8 @@ make sounds-install moh-install
 make hd-sounds-install hd-moh-install
 make cd-sounds-install cd-moh-install
 
-sed -i "s/#formats\/mod_sndfile/formats\/mod_sndfile/g" /usr/src/$switch_version.-release
-
+#sed -i "s/#formats\/mod_sndfile/formats\/mod_sndfile/g" /usr/src/freeswitch-$switch_version.-release/modules.conf
+sed -i "s/#formats\/mod_sndfile/formats\/mod_sndfile/g" modules.conf
 make mod_sndfile-install
 
 #move the music into music/default directory
