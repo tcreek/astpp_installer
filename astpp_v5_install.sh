@@ -443,10 +443,10 @@ normalize_freeswitch()
 {
         systemctl start freeswitch
         systemctl enable freeswitch
-        sed -i "s#max-sessions\" value=\"1000#max-sessions\" value=\"2000#g" /etc/freeswitch/autoload_configs/switch.conf.xml
-        sed -i "s#sessions-per-second\" value=\"30#sessions-per-second\" value=\"50#g" /etc/freeswitch/autoload_configs/switch.conf.xml
-        sed -i "s#max-db-handles\" value=\"50#max-db-handles\" value=\"500#g" /etc/freeswitch/autoload_configs/switch.conf.xml
-        sed -i "s#db-handle-timeout\" value=\"10#db-handle-timeout\" value=\"30#g" /etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#max-sessions\" value=\"1000#max-sessions\" value=\"2000#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#sessions-per-second\" value=\"30#sessions-per-second\" value=\"50#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#max-db-handles\" value=\"50#max-db-handles\" value=\"500#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#db-handle-timeout\" value=\"10#db-handle-timeout\" value=\"30#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
         rm -rf  /etc/freeswitch/dialplan/*
         touch /etc/freeswitch/dialplan/astpp.xml
         rm -rf  /etc/freeswitch/directory/*
