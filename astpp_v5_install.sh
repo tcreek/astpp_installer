@@ -238,22 +238,16 @@ install_prerequisties()
 # install dependencies
 
 
-apt update && apt -y upgrade
-apt install -y wget lsb-release systemd systemd-sysv ca-certificates dialog nano net-tools openssl libssl-dev
-apt install -y autoconf automake devscripts g++ git-core libncurses5-dev libtool make libjpeg-dev pkg-config flac libgdbm-dev 
-
-apt install -y libdb-dev gettext sudo equivs mlocate git dpkg-dev libpq-dev liblua5.2-dev libtiff5-dev libperl-dev 
-apt install -y libcurl4-openssl-dev libsqlite3-dev libpcre3-dev devscripts libspeexdsp-dev libspeex-dev libldns-dev 
-
-
-apt install -y libedit-dev libopus-dev libmemcached-dev libshout3-dev libmpg123-dev libmp3lame-dev yasm nasm libsndfile1-dev 
-apt install -y libuv1-dev libvpx-dev libavformat-dev libswscale-dev libvlc-dev libavformat-dev libswscale-dev libsndfile-dev 
-
-apt install -y wget curl git dnsutils ntpdate systemd net-tools whois sensible-mda mlocate vim imagemagick 
-apt install -y php-pear php-imagick libreoffice ghostscript sngrep software-properties-common lsb-release 
-
-apt install -y apt-transport-https ca-certificates unixodbc unixodbc-bin cmake uuid-dev sqlite3 unzip mariadb-server 
-apt install -y nginx ntpdate ntp lua5.1 bc libxml2-dev ed
+apt install wget lsb-release  systemd-sysv ca-certificates dialog nano net-tools openssl libssl-dev \
+autoconf automake devscripts g++ git libncurses5-dev libtool make libjpeg-dev pkg-config flac libgdbm-dev \
+libdb-dev gettext sudo equivs mlocate git dpkg-dev libpq-dev liblua5.2-dev libtiff5-dev libperl-dev \
+libcurl4-openssl-dev libsqlite3-dev libpcre3-dev devscripts libspeexdsp-dev libspeex-dev libldns-dev \
+libedit-dev libopus-dev libmemcached-dev libshout3-dev libmpg123-dev libmp3lame-dev yasm nasm libsndfile1-dev \
+libuv1-dev libvpx-dev libavformat-dev libswscale-dev libvlc-dev libavformat-dev libswscale-dev libsndfile-dev \
+wget curl git dnsutils ntpdate systemd net-tools whois sensible-mda mlocate vim imagemagick \
+php-pear php-imagick libreoffice ghostscript sngrep software-properties-common lsb-release \
+apt-transport-https ca-certificates unixodbc unixodbc-bin cmake uuid-dev sqlite3 unzip mariadb-server \
+nginx ntpdate ntp lua5.1 bc libxml2-dev ed
 
 #Ion Cube Loader
 
