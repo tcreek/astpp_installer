@@ -238,6 +238,8 @@ install_prerequisties()
 # install dependencies
 
 
+apt update && apt -y upgrade
+
 apt -y install wget lsb-release  systemd-sysv ca-certificates dialog nano net-tools openssl libssl-dev \
 autoconf automake devscripts g++ git libncurses5-dev libtool make libjpeg-dev pkg-config flac libgdbm-dev \
 libdb-dev gettext sudo equivs mlocate git dpkg-dev libpq-dev liblua5.2-dev libtiff5-dev libperl-dev \
