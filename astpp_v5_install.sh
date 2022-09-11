@@ -403,6 +403,22 @@ ln -s /usr/local/freeswitch/bin/fs_cli /usr/bin/fs_cli
 ln -s /usr/local/freeswitch/bin/freeswitch /usr/sbin/freeswitch
 
 
+
+mv -f ${FS_DIR}/scripts /tmp/.
+ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
+ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
+cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/sounds/*.wav ${FS_SOUNDSDIR}/
+cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/* /usr/local/freeswitch/etc/freeswitch/autoload_configs/
+
+
+
+
+
+
+
+
+
+
 #Creating freeswitch user
 groupadd freeswitch
 adduser --quiet --system --home /usr/local/freeswitch --gecos 'FreeSWITCH' --ingroup freeswitch freeswitch --disabled-password 
@@ -448,11 +464,11 @@ normalize_freeswitch()
         sed -i "s#max-db-handles\" value=\"50#max-db-handles\" value=\"500#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
         sed -i "s#db-handle-timeout\" value=\"10#db-handle-timeout\" value=\"30#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
         rm -rf  /etc/freeswitch/dialplan/*
-        touch /etc/freeswitch/dialplan/astpp.xml
-        rm -rf  /etc/freeswitch/directory/*
+        touch /usr/local/freeswitch/etc/freeswitch/dialplan/astpp.xml
+        rm -rf  /usr/local/freeswitch/etc/freeswitch/directory/*
         touch /etc/freeswitch/directory/astpp.xml
-        rm -rf  /etc/freeswitch/sip_profiles/*
-        touch /etc/freeswitch/sip_profiles/astpp.xml
+        rm -rf  /usr/local/freeswitch/etc/freeswitch/sip_profiles/*
+        touch /usr/local/freeswitch/etc/freeswitch/sip_profiles/astpp.xml
         chmod -Rf 755 ${FS_SOUNDSDIR}
         chmod -Rf 777 /usr/share/freeswitch/scripts/astpp/lib
 
