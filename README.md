@@ -22,7 +22,7 @@ The purpose of this script is for multiple reasons compared to the one provided 
 
  6) No telemetry sent
 
-
+WARNING: Make sure the date/time is correct on the server before proceeding, or the install can fail.
 
 To excute installer: 
 
