@@ -74,7 +74,7 @@ ASTPP_DATABASE_NAME="astpp"
 ASTPP_DB_USER="astppuser"
 
 #Freeswich Configuration
-FS_DIR=/usr/local/share/freeswitch
+FS_DIR=/usr/local/freeswitch/share
 FS_SOUNDSDIR=${FS_DIR}/sounds/en/us/callie
 
 
