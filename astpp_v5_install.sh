@@ -466,7 +466,7 @@ normalize_freeswitch()
         rm -rf  /etc/freeswitch/dialplan/*
         touch /usr/local/freeswitch/etc/freeswitch/dialplan/astpp.xml
         rm -rf  /usr/local/freeswitch/etc/freeswitch/directory/*
-        touch /etc/freeswitch/directory/astpp.xml
+        touch /usr/local/freeswitch/etc/freeswitch/directory/astpp.xml
         rm -rf  /usr/local/freeswitch/etc/freeswitch/sip_profiles/*
         touch /usr/local/freeswitch/etc/freeswitch/sip_profiles/astpp.xml
         chmod -Rf 755 ${FS_SOUNDSDIR}
