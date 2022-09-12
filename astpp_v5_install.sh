@@ -74,7 +74,7 @@ ASTPP_DATABASE_NAME="astpp"
 ASTPP_DB_USER="astppuser"
 
 #Freeswich Configuration
-FS_DIR=/usr/share/freeswitch
+FS_DIR=/usr/local/share/freeswitch
 FS_SOUNDSDIR=${FS_DIR}/sounds/en/us/callie
 
 
@@ -470,7 +470,7 @@ normalize_freeswitch()
         rm -rf  /usr/local/freeswitch/etc/freeswitch/sip_profiles/*
         touch /usr/local/freeswitch/etc/freeswitch/sip_profiles/astpp.xml
         chmod -Rf 755 ${FS_SOUNDSDIR}
-        chmod -Rf 777 /usr/share/freeswitch/scripts/astpp/lib
+        chmod -Rf 777 /usr/local/share/freeswitch/scripts/astpp/lib
 
         cp -rf ${ASTPP_SOURCE_DIR}/web_interface/nginx/deb_fs.conf /etc/nginx/conf.d/fs.conf
         chown -Rf root.root ${WWWDIR}/fs
