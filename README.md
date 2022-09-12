@@ -24,7 +24,7 @@ The purpose of this script is for multiple reasons compared to the one provided 
 
 WARNING: Make sure the date/time is correct on the server before proceeding, or the install can fail.
 
-To excute installer: 
+To excute installer (must be as root or sudo): 
 
 wget https://raw.githubusercontent.com/tcreek/astpp_installer/main/astpp_v5_install.sh
 
