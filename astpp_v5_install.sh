@@ -403,6 +403,10 @@ ln -s /usr/local/freeswitch/bin/fs_cli /usr/bin/fs_cli
 ln -s /usr/local/freeswitch/bin/freeswitch /usr/sbin/freeswitch
 
 
+#Freeswich Configuration
+FS_DIR=/usr/local/freeswitch/share/freeswitch
+FS_SOUNDSDIR=${FS_DIR}/sounds/en/us/callie
+
 
 mv -f ${FS_DIR}/scripts /tmp/.
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
