@@ -406,8 +406,8 @@ ln -s /usr/local/freeswitch/bin/freeswitch /usr/sbin/freeswitch
 mv -f ${FS_DIR}/scripts /tmp/.
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
-cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/sounds/*.wav ${FS_SOUNDSDIR}/
-cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/* /etc/freeswitch/autoload_configs/
+cp -rf "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav ${FS_SOUNDSDIR}/
+cp -rf "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
 
 
 
