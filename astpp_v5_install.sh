@@ -436,7 +436,7 @@ After=network.target network-online.target local-fs.target
 [Service]
 ; service
 Type=forking
-PIDFile=/var/run/freeswitch/freeswitch.pid
+PIDFile=/usr/local/freeswitch/run/freeswitch.pid
 Environment="DAEMON_OPTS=-nonat"
 Environment="USER=freeswitch"
 Environment="GROUP=freeswitch"
