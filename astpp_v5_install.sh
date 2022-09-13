@@ -379,7 +379,7 @@ sed -i modules.conf -e s:'endpoints/mod_verto:#endpoints/mod_verto:'
 
 
 # prepare the build
-./configure --prefix=/usr/local/freeswitch --with-openssl
+./configure --with-openssl
 
 # compile and install
 make -j$(($(getconf _NPROCESSORS_ONLN)+1))
@@ -403,16 +403,11 @@ ln -s /usr/local/freeswitch/bin/fs_cli /usr/bin/fs_cli
 ln -s /usr/local/freeswitch/bin/freeswitch /usr/sbin/freeswitch
 
 
-#Freeswich Configuration
-FS_DIR=/usr/local/freeswitch/share/freeswitch
-FS_SOUNDSDIR=${FS_DIR}/sounds/en/us/callie
-
-
 mv -f ${FS_DIR}/scripts /tmp/.
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
 cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/sounds/*.wav ${FS_SOUNDSDIR}/
-cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/* /usr/local/freeswitch/etc/freeswitch/autoload_configs/
+cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/* /etc/freeswitch/autoload_configs/
 
 
 
@@ -441,7 +436,7 @@ After=network.target network-online.target local-fs.target
 [Service]
 ; service
 Type=forking
-PIDFile=/usr/local/freeswitch/var/run/freeswitch/freeswitch.pid
+PIDFile=/var/run/freeswitch/freeswitch.pid
 Environment="DAEMON_OPTS=-nonat"
 Environment="USER=freeswitch"
 Environment="GROUP=freeswitch"
@@ -463,18 +458,18 @@ normalize_freeswitch()
 {
         systemctl start freeswitch
         systemctl enable freeswitch
-        sed -i "s#max-sessions\" value=\"1000#max-sessions\" value=\"2000#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
-        sed -i "s#sessions-per-second\" value=\"30#sessions-per-second\" value=\"50#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
-        sed -i "s#max-db-handles\" value=\"50#max-db-handles\" value=\"500#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
-        sed -i "s#db-handle-timeout\" value=\"10#db-handle-timeout\" value=\"30#g" /usr/local/freeswitch/etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#max-sessions\" value=\"1000#max-sessions\" value=\"2000#g" /etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#sessions-per-second\" value=\"30#sessions-per-second\" value=\"50#g" /etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#max-db-handles\" value=\"50#max-db-handles\" value=\"500#g" /etc/freeswitch/autoload_configs/switch.conf.xml
+        sed -i "s#db-handle-timeout\" value=\"10#db-handle-timeout\" value=\"30#g" /etc/freeswitch/autoload_configs/switch.conf.xml
         rm -rf  /etc/freeswitch/dialplan/*
-        touch /usr/local/freeswitch/etc/freeswitch/dialplan/astpp.xml
-        rm -rf  /usr/local/freeswitch/etc/freeswitch/directory/*
-        touch /usr/local/freeswitch/etc/freeswitch/directory/astpp.xml
-        rm -rf  /usr/local/freeswitch/etc/freeswitch/sip_profiles/*
-        touch /usr/local/freeswitch/etc/freeswitch/sip_profiles/astpp.xml
+        touch /etc/freeswitch/dialplan/astpp.xml
+        rm -rf  /etc/freeswitch/directory/*
+        touch /etc/freeswitch/directory/astpp.xml
+        rm -rf  /etc/freeswitch/sip_profiles/*
+        touch /etc/freeswitch/sip_profiles/astpp.xml
         chmod -Rf 755 ${FS_SOUNDSDIR}
-        chmod -Rf 777 /usr/local/share/freeswitch/scripts/astpp/lib
+        chmod -Rf 777 /usr/local/freeswitch/scripts/astpp/lib
 
         cp -rf ${ASTPP_SOURCE_DIR}/web_interface/nginx/deb_fs.conf /etc/nginx/conf.d/fs.conf
         chown -Rf root.root ${WWWDIR}/fs
