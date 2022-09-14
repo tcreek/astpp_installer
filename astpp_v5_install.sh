@@ -1,5 +1,5 @@
 #!/bin/bash
-set -f noglob
+set -f 
 
 #############################################################################################
 # ASTP v1.0.0-beta1  installer for ASTPP version 5
