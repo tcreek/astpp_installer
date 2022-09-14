@@ -411,13 +411,11 @@ ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
 
 
 
-cp -f /opt/ASTPP/freeswitch/sounds/*.wav /usr/local/freeswitch/sounds/en/us/callie
-cp -f /opt/ASTPP/freeswitch/conf/autoload_configs/* /etc/freeswitch/autoload_configs/
+#cp -f /opt/ASTPP/freeswitch/sounds/*.wav /usr/local/freeswitch/sounds/en/us/callie
+#cp -f /opt/ASTPP/freeswitch/conf/autoload_configs/* /etc/freeswitch/autoload_configs/
 
 
-#Not working for some unknown reason
-#cp -f "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav "${FS_SOUNDSDIR}"/
-#cp -f "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
+
 
 
 
@@ -569,6 +567,11 @@ cp -rf ${ASTPP_SOURCE_DIR}/config/astpp-config.conf ${ASTPPDIR}astpp-config.conf
 cp -rf ${ASTPP_SOURCE_DIR}/config/astpp.lua ${ASTPPDIR}astpp.lua
 ln -s ${ASTPP_SOURCE_DIR}/web_interface/astpp ${WWWDIR}
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
+
+cp -f "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav "${FS_SOUNDSDIR}"/
+cp -f "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
+
+systemctl resstart freeswitch
 
 } #end install_astpp
 
