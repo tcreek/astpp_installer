@@ -409,8 +409,15 @@ mv -f ${FS_DIR}/scripts /tmp/.
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
 
-cp -f "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav "${FS_SOUNDSDIR}"/
-cp -f "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
+
+
+cp -f /opt/ASTPP/freeswitch/sounds/*.wav /usr/local/freeswitch/sounds/en/us/callie
+cp -f /opt/ASTPP/freeswitch/conf/autoload_configs/* /etc/freeswitch/autoload_configs/
+
+
+#Not working for some unknown reason
+#cp -f "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav "${FS_SOUNDSDIR}"/
+#cp -f "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
 
 
 
