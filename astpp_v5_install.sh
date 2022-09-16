@@ -464,11 +464,11 @@ normalize_freeswitch()
         sed -i "s#sessions-per-second\" value=\"30#sessions-per-second\" value=\"50#g" /etc/freeswitch/autoload_configs/switch.conf.xml
         sed -i "s#max-db-handles\" value=\"50#max-db-handles\" value=\"500#g" /etc/freeswitch/autoload_configs/switch.conf.xml
         sed -i "s#db-handle-timeout\" value=\"10#db-handle-timeout\" value=\"30#g" /etc/freeswitch/autoload_configs/switch.conf.xml
-        rm -rf  /etc/freeswitch/dialplan/*
+        #rm -rf  /etc/freeswitch/dialplan/*
         touch /etc/freeswitch/dialplan/astpp.xml
         #rm -rf  /etc/freeswitch/directory/*
         touch /etc/freeswitch/directory/astpp.xml
-        rm -rf  /etc/freeswitch/sip_profiles/*
+        #rm -rf  /etc/freeswitch/sip_profiles/*
         touch /etc/freeswitch/sip_profiles/astpp.xml
         chmod -Rf 755 ${FS_SOUNDSDIR}
         chmod -Rf 777 /usr/local/freeswitch/scripts/astpp/lib
