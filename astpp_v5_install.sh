@@ -416,16 +416,8 @@ ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
 
 
 
-
-
-
-
-
-
-
-
-
-
+cp -f "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav "${FS_SOUNDSDIR}"/
+cp -f "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
 
 
 #Creating freeswitch user
@@ -474,7 +466,7 @@ normalize_freeswitch()
         sed -i "s#db-handle-timeout\" value=\"10#db-handle-timeout\" value=\"30#g" /etc/freeswitch/autoload_configs/switch.conf.xml
         rm -rf  /etc/freeswitch/dialplan/*
         touch /etc/freeswitch/dialplan/astpp.xml
-        rm -rf  /etc/freeswitch/directory/*
+        #rm -rf  /etc/freeswitch/directory/*
         touch /etc/freeswitch/directory/astpp.xml
         rm -rf  /etc/freeswitch/sip_profiles/*
         touch /etc/freeswitch/sip_profiles/astpp.xml
@@ -568,10 +560,7 @@ cp -rf ${ASTPP_SOURCE_DIR}/config/astpp.lua ${ASTPPDIR}astpp.lua
 ln -s ${ASTPP_SOURCE_DIR}/web_interface/astpp ${WWWDIR}
 ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
 
-cp -f "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav "${FS_SOUNDSDIR}"/
-cp -f "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
 
-systemctl resstart freeswitch
 
 } #end install_astpp
 
@@ -898,8 +887,8 @@ start_installation ()
         get_user_response
 	os_dependencies
         freeswitch_source_dependencies
-	install_freeswitch
         get_astpp_source
+	install_freeswitch
         normalize_mariadb
         install_database
         normalize_freeswitch
