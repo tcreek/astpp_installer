@@ -2,14 +2,14 @@
 
 
 #############################################################################################
-# ASTP v1.0.0-beta1  installer for ASTPP version 5
+# ASTP v1.0.0-beta1  installer for ASTPP version 5 - Token Branch
 #
 #
 # This installation script is partly based on the iNetrix Technologies Pvt. Ltd.
 # installtion script for installing ASTPP.
 #
 # This script will only install version 5 of ASTPP, and for using only
-# Debian 10 and 11.
+# Debian 10.
 #
 # The purpose of this script is for multiple reasons compared to the one
 # providedby iNetrix:
@@ -28,7 +28,9 @@
 #
 # 5) Option to install Postfix instead of sendmail which provides better logging
 #
-# 6) No telemetry sent
+# 6) Uses legacy IP Tables instead of UFW
+#
+# 7) No telemetry sent
 #
 # License https://www.gnu.org/licenses/agpl-3.0.html
 #
@@ -76,7 +78,7 @@ ASTPP_DATABASE_NAME="astpp"
 ASTPP_DB_USER="astppuser"
 
 #Freeswich Configuration
-FS_DIR=/usr/local/freeswitch/
+FS_DIR=/usr/share/freeswitch/
 FS_SOUNDSDIR=${FS_DIR}/sounds/en/us/callie
 
 
@@ -169,6 +171,48 @@ read -n 1 -p "Do you wish to continue with installation of Postfix? (y/n/q[uit])
 } #end of pre_install
 
 
+#Verify freeswitch token
+verification ()
+{
+        tput bold
+        echo "                       Authentication required !!!!!!
+Personal Access Tokens (PAT)s are required to access FreeSWITCH install packages."
+        echo ""
+
+        echo "VISIT below link to generate Personal Access Token https://freeswitch.org/confluence/display/FREESWITCH/HOWTO+Create+a+SignalWire+Personal+Access+Token"
+        sleep 3s
+        echo "" && echo ""
+        read -p "Enter your Personal Access Token: ${FS_TOKEN}"
+        tput sgr0
+        FS_TOKEN=${REPLY}
+        echo ""
+         wget --http-user=signalwire --http-password=$FS_TOKEN -O /usr/share/keyrings/signalwire-freeswitch-repo.gpg https://freeswitch.signalwire.com/repo/deb/debian-release/signalwire-freeswitch-repo.gpg
+         verify_debian10="$?"
+                if [ $verify_debian10 = 0 ]; then
+                        tput bold
+                        echo "******************************************************************************"
+                        echo ""
+                        echo "You have entered valid token"
+                        echo ""
+                        echo "******************************************************************************"
+                        sleep 4s
+                        tput sgr0
+                else
+                        echo ""
+                        tput bold
+                        echo "Invalid token"
+                        echo "******************************************************************************"
+                        echo ""
+                        echo "For more information go to https://id.signalwire.com/personal_access_tokens "
+                        echo ""
+                        echo "******************************************************************************"
+                        sleep 3s
+                        tput sgr0
+                        exit 0
+                fi
+
+
+}
 
 
 
@@ -302,49 +346,10 @@ fi
 } #end os_dependencies
 
 
-freeswitch_source_dependencies()
-{
-
-###FreeSwitch Source dependencies
-
-# libks
-	cd /usr/src
-	git clone https://github.com/signalwire/libks.git libks
-	cd libks
-	cmake .
-	make -j$(($(getconf _NPROCESSORS_ONLN)+1))
-	make install
-        ldconfig
-	# libks C includes
-	export C_INCLUDE_PATH=/usr/include/libks
-
-
-# spandsp
-	cd /usr/src
-	git clone https://github.com/freeswitch/spandsp.git spandsp
-	cd spandsp
-	sh autogen.sh
-	./configure
-	make -j$(($(getconf _NPROCESSORS_ONLN)+1))
-	make install
-	ldconfig
-
-# sofia-sip
-	cd /usr/src
-	wget https://github.com/freeswitch/sofia-sip/archive/refs/tags/v1.13.7.tar.gz
-	tar xf v1.13.7.tar.gz
-	cd sofia-sip-1.13.7
-	sh autogen.sh
-	./configure
-	make -j$(($(getconf _NPROCESSORS_ONLN)+1))
-	make install
-	ldconfig
-
-} # end freeswitch_source_dependencies
 
 
 ##########################################
-###########Compile and install FreeSwitch
+###########Install FreeSwitch
 ##########################################
 
 
@@ -352,102 +357,22 @@ install_freeswitch()
 {
 
 
-cd /usr/src
-wget https://files.freeswitch.org/freeswitch-releases/freeswitch-$switch_version.-release.tar.gz
-tar xf freeswitch-$switch_version.-release.tar.gz
-cd freeswitch-$switch_version.-release
+      echo "Installing FREESWITCH"
+      $SLEEP 5
+      apt-get update && apt-get install -y gnupg2 wget lsb-release
+       echo "machine freeswitch.signalwire.com login signalwire password $FS_TOKEN" > /etc/apt/auth.conf
+       echo "deb [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ `lsb_release -sc` main" > /etc/apt/sources.list.d/freeswitch.list
+       echo "deb-src [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ `lsb_release -sc` main" >> /etc/apt/sources.list.d/freeswitch.list
+       apt-get update -y
+       sleep 1s
+       apt-get install freeswitch-meta-all -y
 
+        mv -f ${FS_DIR}/scripts /tmp/.
+        ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
+        ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
+        cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/sounds/*.wav ${FS_SOUNDSDIR}/
+        cp -rf ${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/* /etc/freeswitch/autoload_configs/
 
-sed -i "s/applications\/mod_signalwire/#applications\/mod_signalwire/g" modules.conf
-sed -i "s/formats\/mod_sndfile/#formats\/mod_sndfile/g" modules.conf
-
-
-# enable required modules
-sed -i modules.conf -e s:'#applications/mod_av:formats/mod_av:'
-sed -i modules.conf -e s:'#applications/mod_callcenter:applications/mod_callcenter:'
-sed -i modules.conf -e s:'#applications/mod_cidlookup:applications/mod_cidlookup:'
-sed -i modules.conf -e s:'#applications/mod_memcache:applications/mod_memcache:'
-sed -i modules.conf -e s:'#applications/mod_nibblebill:applications/mod_nibblebill:'
-sed -i modules.conf -e s:'#applications/mod_curl:applications/mod_curl:'
-sed -i modules.conf -e s:'#formats/mod_shout:formats/mod_shout:'
-sed -i modules.conf -e s:'#say/mod_say_es:say/mod_say_es:'
-sed -i modules.conf -e s:'#say/mod_say_fr:say/mod_say_fr:'
-
-
-#disable module or install dependency libks to compile signalwire
-sed -i modules.conf -e s:'applications/mod_signalwire:#applications/mod_signalwire:'
-sed -i modules.conf -e s:'endpoints/mod_skinny:#endpoints/mod_skinny:'
-sed -i modules.conf -e s:'endpoints/mod_verto:#endpoints/mod_verto:'
-
-
-# prepare the build
-./configure --with-openssl
-
-# compile and install
-make -j$(($(getconf _NPROCESSORS_ONLN)+1))
-make install
-make sounds-install moh-install
-make hd-sounds-install hd-moh-install
-make cd-sounds-install cd-moh-install
-
-#sed -i "s/#formats\/mod_sndfile/formats\/mod_sndfile/g" /usr/src/freeswitch-$switch_version.-release/modules.conf
-sed -i "s/#formats\/mod_sndfile/formats\/mod_sndfile/g" modules.conf
-make mod_sndfile-install
-
-#move the music into music/default directory
-#mkdir -p /usr/share/freeswitch/sounds/music/default
-#mv /usr/share/freeswitch/sounds/music/*000 /usr/share/freeswitch/sounds/music/default
-
-
-
-ln -s /usr/local/freeswitch/conf /etc/freeswitch
-ln -s /usr/local/freeswitch/bin/fs_cli /usr/bin/fs_cli
-ln -s /usr/local/freeswitch/bin/freeswitch /usr/sbin/freeswitch
-
-
-mv -f ${FS_DIR}/scripts /tmp/.
-ln -s ${ASTPP_SOURCE_DIR}/freeswitch/fs ${WWWDIR}
-ln -s ${ASTPP_SOURCE_DIR}/freeswitch/scripts ${FS_DIR}
-
-
-
-#cp -f /opt/ASTPP/freeswitch/sounds/*.wav /usr/local/freeswitch/sounds/en/us/callie
-#cp -f /opt/ASTPP/freeswitch/conf/autoload_configs/* /etc/freeswitch/autoload_configs/
-cp -f "${ASTPP_SOURCE_DIR}/freeswitch/sounds/"*.wav "${FS_SOUNDSDIR}"/
-cp -f "${ASTPP_SOURCE_DIR}/freeswitch/conf/autoload_configs/"* /etc/freeswitch/autoload_configs/
-
-
-#Creating freeswitch user
-groupadd freeswitch
-adduser --quiet --system --home /usr/local/freeswitch --gecos 'FreeSWITCH' --ingroup freeswitch freeswitch --disabled-password 
-chown -R freeswitch:freeswitch /usr/local/freeswitch/
-chmod -R ug=rwX,o= /usr/local/freeswitch/
-chmod -R u=rwx,g=rx /usr/local/freeswitch/bin/*
-
-#Add FreeSwitch as Systemd background service
-/bin/cat <<'EOTT' >/etc/systemd/system/freeswitch.service
-
-[Unit]
-Description=FreeSWITCH open source softswitch
-Wants=network-online.target Requires=network.target local-fs.target
-After=network.target network-online.target local-fs.target
-
-[Service]
-; service
-Type=forking
-PIDFile=/usr/local/freeswitch/run/freeswitch.pid
-Environment="DAEMON_OPTS=-nonat"
-Environment="USER=freeswitch"
-Environment="GROUP=freeswitch"
-EnvironmentFile=-/etc/default/freeswitch
-ExecStartPre=/bin/chown -R ${USER}:${GROUP} /usr/local/freeswitch
-ExecStart=/usr/local/freeswitch/bin/freeswitch -u ${USER} -g ${GROUP} -ncwait ${DAEMON_OPTS}
-TimeoutSec=45s
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOTT
 
 } #end install_freeswitch
 
@@ -676,15 +601,64 @@ install_database ()
 configure_firewall()
 {
 
-apt install -y firewalld
-systemctl start firewalld
-systemctl enable firewalld
-firewall-cmd --permanent --zone=public --add-service=https
-firewall-cmd --permanent --zone=public --add-service=http
-firewall-cmd --permanent --zone=public --add-port=5060/udp
-firewall-cmd --permanent --zone=public --add-port=5060/tcp
-firewall-cmd --permanent --zone=public --add-port=16384-32767/udp
-firewall-cmd --reload
+#send a message
+verbose "Configuring IPTables"
+
+#defaults to nftables by default this enables iptables
+if [ ."$os_codename" = ."buster" ]; then
+	update-alternatives --set iptables /usr/sbin/iptables-legacy
+	update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+fi
+if [ ."$os_codename" = ."bullseye" ]; then
+	apt-get install -y iptables
+	update-alternatives --set iptables /usr/sbin/iptables-legacy
+	update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+fi
+
+#remove ufw
+ufw reset
+ufw disable
+apt-get remove -y ufw
+#apt-get purge ufw
+
+#run iptables commands
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -j DROP -p udp --dport 5060:5091 -m string --string "friendly-scanner" --algo bm --icase
+iptables -A INPUT -j DROP -p tcp --dport 5060:5091 -m string --string "friendly-scanner" --algo bm --icase
+iptables -A INPUT -j DROP -p udp --dport 5060:5091 -m string --string "sipcli/" --algo bm --icase
+iptables -A INPUT -j DROP -p tcp --dport 5060:5091 -m string --string "sipcli/" --algo bm --icase
+iptables -A INPUT -j DROP -p udp --dport 5060:5091 -m string --string "VaxSIPUserAgent/" --algo bm --icase
+iptables -A INPUT -j DROP -p tcp --dport 5060:5091 -m string --string "VaxSIPUserAgent/" --algo bm --icase
+iptables -A INPUT -j DROP -p udp --dport 5060:5091 -m string --string "pplsip" --algo bm --icase
+iptables -A INPUT -j DROP -p tcp --dport 5060:5091 -m string --string "pplsip" --algo bm --icase
+iptables -A INPUT -j DROP -p udp --dport 5060:5091 -m string --string "system " --algo bm --icase
+iptables -A INPUT -j DROP -p tcp --dport 5060:5091 -m string --string "system " --algo bm --icase
+iptables -A INPUT -j DROP -p udp --dport 5060:5091 -m string --string "exec." --algo bm --icase
+iptables -A INPUT -j DROP -p tcp --dport 5060:5091 -m string --string "exec." --algo bm --icase
+iptables -A INPUT -j DROP -p udp --dport 5060:5091 -m string --string "multipart/mixed;boundary" --algo bm --icase
+iptables -A INPUT -j DROP -p tcp --dport 5060:5091 -m string --string "multipart/mixed;boundary" --algo bm --icase
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 7443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 5060:5091 -j ACCEPT
+iptables -A INPUT -p udp --dport 5060:5091 -j ACCEPT
+iptables -A INPUT -p udp --dport 16384:32768 -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+iptables -t mangle -A OUTPUT -p udp -m udp --sport 16384:32768 -j DSCP --set-dscp 46
+iptables -t mangle -A OUTPUT -p udp -m udp --sport 5060:5091 -j DSCP --set-dscp 26
+iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 5060:5091 -j DSCP --set-dscp 26
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+#answer the questions for iptables persistent
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+apt-get install -y iptables-persistent
+
 } #end configure_firewall
 
 
