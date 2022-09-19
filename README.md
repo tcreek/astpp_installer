@@ -26,7 +26,14 @@ WARNING: Make sure the date/time is correct on the server before proceeding, or 
 
 To excute installer (must be as root or sudo): 
 
+For Main installer (all sources compiled)
+
 wget https://raw.githubusercontent.com/tcreek/astpp_installer/main/astpp_v5_install.sh
+
+For FreeSwitch/SignalWire packages (Token required)
+
+wget https://raw.githubusercontent.com/tcreek/astpp_installer/token/astpp_v5_install.sh
+
 
 chmod +x astpp_v5_install.sh
 
