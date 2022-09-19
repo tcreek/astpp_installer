@@ -854,6 +854,7 @@ start_installation ()
         echo $ASTPPUSER_MYSQL_PASSWORD
 
         pre_install
+	verification
         install_prerequisties
         get_user_response
 	os_dependencies
