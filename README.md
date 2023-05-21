@@ -22,6 +22,8 @@ The purpose of this script is for multiple reasons compared to the one provided 
  5) Option to install Postfix instead of sendmail which provides better logging
 
  6) No telemetry sent
+ 
+ 7) option to install Let's Encrypt Certificate
 
 WARNING: Make sure the date/time is correct on the server before proceeding, or the install can fail.
 
