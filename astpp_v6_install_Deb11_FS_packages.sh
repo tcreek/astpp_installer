@@ -2,35 +2,34 @@
 
 
 #############################################################################################
-# ASTP v1.0.0  installer for ASTPP version 6
+# ASTP v1.2.0  installer for ASTPP version 6
 #
 #
 # This installation script is partly based on the iNetrix Technologies Pvt. Ltd.
 # installtion script for installing ASTPP.
 #
-# This script will only install version 6 of ASTPP onto Debian 6
+# This script will only install version 6 of ASTPP, and for Ububtu.
 #
 # The purpose of this script is for multiple reasons compared to the one
 # providedby iNetrix:
 #
-# 
-# 1) Uses MariaDB from repos instead of MySQL from their repo.
+# 1) Compiles FreeSwitch from source instead of using the SignalWire repo
+#    which requires a SignalWire account with a token attached to that account
+#
+# 2) Uses MariaDB from repos instead of MySQL from their repo.
 #    This has caused issues in the past
 #
-# 2) Does not use RemiRepo for PHP 7.3+. iNetrix for unknown reasons uses the RemiRepo
-#    Instead uses PHP version 7.4 from Debian repo
+# 3) Does not use RemiRepo for PHP 7.3+. iNetrix for unknown reasons uses the RemiRepo
 #
-# 3) No longer support of CentOS 7/8 as those are End of Life
+# 4) No longer support of CentOS 7/8 as those are End of Life
 #    CentOS Stream is now the default distro, and not stable for production
 #    May consider Rocky Linux 8 (CentOS 8 fork) in the future
 #
-# 4) Option to install Postfix instead of sendmail which provides better logging
+# 5) Option to install Postfix instead of sendmail which provides better logging
 #
-# 5) Uses legacy IP Tables instead of UFW, or Firewalld
+# 6) Uses legacy IP Tables instead of UFW
 #
-# 6) No telemetry sent
-#
-# 7) Option to install Let's Encrypt Certificate
+# 7) No telemetry sent
 #
 # License https://www.gnu.org/licenses/agpl-3.0.html
 #
@@ -51,6 +50,14 @@
 #############################################################################################
 
 
+
+# Sofia-Sip Version
+sofia_version=1.13.7                        # release-version for sofia-sip to use
+
+# FreeSWITCH Version
+switch_version=1.10.9                       # which source code to download, only for source
+
+
 #General Congifuration
 TEMP_USER_ANSWER="no"
 ASTPP_SOURCE_DIR=/opt/ASTPP
@@ -60,7 +67,7 @@ os_codename=$(lsb_release -cs)
 
 #ASTPP Configuration
 ASTPPDIR=/var/lib/astpp/
-ASTPPEXECDIR=/usr/local/astpp/
+ASTPPEXECDIR=/usr/share/astpp/
 ASTPPLOGDIR=/var/log/astpp/
 
 
@@ -70,7 +77,7 @@ ASTPP_DATABASE_NAME="astpp"
 ASTPP_DB_USER="astppuser"
 
 #Freeswich Configuration
-FS_DIR=/usr/local/freeswitch/
+FS_DIR=/usr/share/freeswitch/
 FS_SOUNDSDIR=${FS_DIR}/sounds/en/us/callie
 
 
@@ -207,6 +214,14 @@ read -n 1 -p "Do you wish to continue with installation of Postfix? (y/n/q[uit])
 } #end of pre_install
 
 
+
+
+
+
+
+
+
+
 #Generate random password
 genpasswd()
 {
@@ -286,6 +301,9 @@ apt-transport-https ca-certificates unixodbc cmake uuid-dev sqlite3 unzip mariad
 nginx ntpdate ntp lua5.1 bc libxml2-dev ed mcrypt
 
 
+
+#if [ $os_codename = 'buster' ] || [ $os_codename = 'bullseye' ]; then
+
 else
 
 apt -y install wget lsb-release  systemd-sysv ca-certificates dialog nano net-tools openssl libssl-dev \
@@ -350,6 +368,20 @@ elif [ ."$os_codename" = ."bullseye" ]; then
 	apt install -y php7.4-gd php7.4-json php7.4-mbstring php7.4-mysql php7.4-opcache php7.4-imap php7.4-geoip
 	
 	
+	
+elif [ ."$os_codename" = ."buster" ]; then
+	
+	   printf "%s\n" "deb http://ftp.de.debian.org/debian buster-backports main" | \
+        tee /etc/apt/sources.list.d/buster-backports.list
+
+	apt update
+
+        apt install -t buster-backports iptables -y 
+
+	apt install -y libvpx5 swig3.0 python3-distutils 
+	apt install -y php7.3 php7.3-fpm php7.3-mysql php7.3-cli php7.3-json php7.3-readline php7.3-xml php7.3-curl
+	apt install -y php7.3-gd php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-imap
+	
 fi
 
 } #end os_dependencies
@@ -361,7 +393,7 @@ install_freeswitch_packages()
 {
 
 
-
+#if [ ."$os_codename" = ."buster" ]; then
    
        
 
@@ -439,9 +471,9 @@ get_astpp_source()
 {
         cd /opt
         
-         #  git clone -b V6.0 https://github.com/iNextrix/ASTPP/
+        git clone -b V6.0 https://github.com/iNextrix/ASTPP/
         
-        git clone -b php74_fix https://github.com/sdwru/ASTPP-1 ASTPP
+        
        
 } #end get_astpp_source
 
@@ -610,11 +642,17 @@ install_database ()
         
         #sed -i -e 's/utf8mb4_0900_ai_ci/1utf8mb4_unicode_520_ci/g' /opt/ASTPP/database/astpp-6.0.1.sql
         #utf8_unicode_ci
-        
-        
-        
+                       
         mysql -uroot -p${MYSQL_ROOT_PASSWORD} astpp < ${ASTPP_SOURCE_DIR}/database/astpp-6.0.sql
         mysql -uroot -p${MYSQL_ROOT_PASSWORD} astpp < ${ASTPP_SOURCE_DIR}/database/astpp-6.0.1.sql
+
+	#database cpnnector
+        cd /opt/ASTPP/misc/
+        tar -xzvf odbc.tar.gz
+	mkdir -p /usr/lib/x86_64-linux-gnu/odbc/.
+        cp -rf odbc/libmyodbc8* /usr/lib/x86_64-linux-gnu/odbc/.
+
+
 
 } #end install_database
 
@@ -859,24 +897,157 @@ start_installation ()
 	introduction
 	MYSQL_ROOT_PASSWORD=`echo "$(genpasswd 20)" | sed s/./*/5`
         ASTPPUSER_MYSQL_PASSWORD=`echo "$(genpasswd 20)" | sed s/./*/5`
-   
-        pre_install
+
+        ## Just making sure password is generated
+        echo $MYSQL_ROOT_PASSWORD
+        echo $ASTPPUSER_MYSQL_PASSWORD
+
+        
         verification
+	
+	echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        pre_install
+        
+        echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+	
+		
         install_prerequisties
+        
+        echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+        
         get_user_response
+	
+	echo ""
+	read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+	
+	
 	os_dependencies
+        
+        echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+        
+       
+        
         get_astpp_source
+	
+	echo ""
+	read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+	
+	 
+	
 	install_freeswitch_packages
+        
+        echo ""
+        echo "######### FreeSwitch Packages"
+        echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+        
         install_astpp
+        
+        echo ""
+        echo "Install ASTPP"
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+        
         normalize_mariadb
-    	install_database
-           
+        
+        echo ""
+        echo "Normalize MariaDB"
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+		
+        install_database
+        
+        echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
         normalize_freeswitch
         
-                 
+        echo ""
+        echo "Normalize FreeSwitch"
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+		
+       
+        
+        
+        echo "Now Normalizing ASTPP"
+        echo ""
+        
+        
         normalize_astpp
         
-             
+        echo ""
+        read -n 1 -p "Normalized ATSPP Completed. Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+        
         configure_firewall
         
         echo ""
@@ -890,22 +1061,40 @@ start_installation ()
         
         install_fail2ban
         
-             
+        echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+        
         install_monit
         
-      
+        echo ""
+        read -n 1 -p "Do you wish to continue with installation [y/n] "
+                if [ "$REPLY"   = "n" ]; then
+
+		exit
+		
+		fi
+		
+		
+		
 	read -n 1 -p "Install Certificate from Let's Encrypt? [y/n] "
                 if [ "$REPLY"   = "y" ]; then
 
 		letsencrypt
 		
 		else
-		exit
+		echo ""
+    		echo "Skipping Let's Encrypt certificate installation."
 		
 		fi
         
         logrotate_install
-               
+        
+        
         clean_server
 
         clear
@@ -931,6 +1120,5 @@ start_installation ()
         echo "******************************************************************************************"
 }
 start_installation
-
 
 
